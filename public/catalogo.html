@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>catalogo.html</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+<style>
+body{
+    font-family:'Titillium Web', sans-serif; background-color:black;
+  }
+a { color:white }
+.header {  
+      box-shadow: 1px 1px 4px 0 rgb(0, 0, 0, .1); width:100%; 
+ }
+.header .menu {clear: both;/*se ne frega del float precedente*/
+  max-height: 0; max-width: 0;/*cancella le scritte del menu a sinistra*/
+  transition: max-height .3s; transition: max-width .3s;
+  position:relative; top:40px; left:-10px}
+.header ul {
+        list-style-type: none;overflow: hidden;   
+ }
+.header ul a {
+        display:block; padding:10px; text-decoration:none; color:#F94F4F;
+        font-weight:bold; font-size:17px; border-right:1px solid #660000;
+}
+.header ul a:hover {
+      background-color: #453434; color:white; 
+}
+
+.header .menu-icon {/* posizione delle 3 barrette orizzontali menu smartphone
+          /* border: 1px solid red; */
+          padding:20px 20px; position:relative; 
+          cursor:pointer;/*la freccetta diventa manina*/
+}
+/* CREAZIONE DISEGNO MENU NEI MOBILI con pseudo elementi */
+.header .menu-icon .nav-icon {
+          background-color:yellow; display:block; width:23px;
+          height:2px; position:relative;
+          transition:background-color .2s esse-out;
+}
+.header .menu-icon .nav-icon::before {
+        background-color: yellow;
+        content: "";/*contiene un testo */
+        display:block;
+        height: 100%;/*del nav-icon precedente*/
+        width: 100%;/*del nav-icon precedente*/
+        transition:all .2s; position:absolute; top:6px
+}
+.header .menu-icon .nav-icon::after {
+        background-color:yellow; content:""; display:block;
+        height:100%; width:100%;
+        transition:all .2s; position:absolute; top:-6px
+}
+.header .menu-btn {display: none}
+/* quando la checkbox è ceccata l'effetto lo dai a menu */
+.header .menu-btn:checked ~ .menu{ max-height:380px; max-width:300px; background-color:#2E2E2E }
+.header .menu-btn:checked ~ .menu-icon .nav-icon {
+  background-color: transparent
+}
+/*quando si cecca il simbolo menu diventa una x*/
+.header .menu-btn:checked ~ .menu-icon .nav-icon::before {
+  transform: rotate(-45deg);top:0
+}
+.header .menu-btn:checked ~ .menu-icon .nav-icon::after {
+  transform: rotate(45deg);top:0
+}
+hr {border:2px solid green}
+label {color:white}
+.titolo {
+    color:yellow; margin:15px; display:inline
+}
+
+/*regole applicate al pc desktop----------------------------------------*/
+@media (min-width:48em) {
+  .header li { float:left }
+  .header li a { padding:20px }
+  .header .menu {clear:both; float:right; max-width:100%;  
+    position:relative; top:0px; left:-70px }
+  .header .menu-icon { display:none }
+  .header .logo {float:left; font-size: 35px; padding: 10px 20px;width:50%;}
+  .titolo {color:yellow; margin:35px; display:inline; font-size:30px;}
+}
+</style>
+<body>   
+<header class="header">
+    <p class="titolo">Eyes and blue IN</p>   
+    <input class="menu-btn" id="menu-btn" type="checkbox">
+        <label class="menu-icon" for="menu-btn" style="left:120px; top:10px">
+        <span onclick="togli_scroll()" class="nav-icon"></span>
+        </label>
+     <div class="menu">
+      <ul> 
+          <li><a href="home_page.html">HOME</a></li>
+          <li><a href="catalogo.html">CATALOGO</a></li>
+          <li><a href="form.html">INSERISCI PRODOTTO</a></li>
+          <li><a href="contatti.php">CONTATTI</a></li>
+          <li><a href="login.html">AREA CLIENTI</a></li>
+      </ul>
+     </div>    
+</header><br><hr>
+<h2 class="text-center" style="color:white">Lista occhiali</h2>
+<div class="container">
+  <div id="occhi"></div>
+</div>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit occhiale</h4>
+      </div>
+      <div class="modal-body">
+
+        <form id="editForm" method="POST">
+        <input type="hidden" id="idOcchiale" name="id">
+          <div class="col-md-6">
+            <label for="nome">Nome:</label>
+            <input class="form-control" id="nome" type="text" name="nome">
+            <label  for="gender">Gender:</label>
+            <input class="form-control" id="gender" type="text" name="gender">
+            <label  for="materiale">Materiale:</label>
+            <input class="form-control" id="materiale" type="text" name="materiale"><br>
+            <button type="submit">Invia:</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+    <script type='text/javascript'>
+  function loadOcchiali() {
+    const xhttp=new XMLHttpRequest()
+    xhttp.open("GET","http://localhost:3000/eyes",false)
+    xhttp.send(); 
+    let occhiali=JSON.parse(xhttp.responseText) 
+    console.log(occhiali)
+    if (!occhiali){document.getElementById('occhi').innerHTML="<h1>Nessun prodotto presente in archivio"
+                    return}
+    for (let occhiale of occhiali){
+        let x=`<div style="color:white">
+                <h1>${occhiale.nome}</h1>
+                <h2>${occhiale.gender}</h2>
+                <h3>${occhiale.materiale}</h3>
+                <h3>${occhiale.id}</h3>
+                <button onClick="setEditModal('${occhiale.id}')" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Edit</button>
+                <button onClick="delet('${occhiale.id}')" class="btn btn-danger">Delete</button>
+            </div><hr>`
+                
+        const tab=document.getElementById('occhi')
+        tab.insertAdjacentHTML('beforeend',x)
+    }
+  }
+  function delet(id) {
+    fetch(`http://localhost:3000/eyes/${id}`,{method:'DELETE',header:{'Content-Type':'application/json'}})
+    location.reload()
+  }
+  function setEditModal(id) {
+    const xhttp=new XMLHttpRequest()
+    xhttp.open("GET",`http://localhost:3000/eyes/${id}`,false)
+    xhttp.send()
+    let occhiale=JSON.parse(xhttp.responseText)
+    let {nome,gender,materiale} = occhiale //scompattamento elemento occhiale con id == id in query string
+    document.getElementById('idOcchiale').value=id
+    document.getElementById('gender').value=gender
+    document.getElementById('nome').value=nome
+    document.getElementById('materiale').value=materiale
+    document.getElementById('editForm').action=`http://localhost:3000/eyes/${id}`   
+  }
+  loadOcchiali()
+</script>
+</body>
+</html>
