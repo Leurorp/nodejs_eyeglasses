@@ -24,7 +24,7 @@ app.use('/eyes',occhialiRouter)
 
 app.use(express.static('public'))
 
-app.get('/home',(req,res)=>{res.sendFile('home_page.html',{root: __dirname + "/public"})})
+app.get('/',(req,res)=>{res.sendFile('home_page.html',{root: __dirname + "/public"})})
 app.get('/catalogo',(req,res)=>{res.sendFile('catalogo.html',{root: __dirname + "/public"})})
 app.get('/new',(req,res)=>{res.sendFile('form.html',{root: __dirname + "/public"})})
 app.all('*',(req,res)=>{res.send('<h1>Pagina non trovata</h1>')})  
