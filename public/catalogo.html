@@ -142,7 +142,7 @@ label {color:white}
 <script type='text/javascript'>
   function loadOcchiali() {
     const xhttp=new XMLHttpRequest()
-    xhttp.open("GET","http://localhost:3000/eyes",false)
+    xhttp.open("GET","http://127.0.0.1:3000/eyes",false)
     xhttp.send(); 
     let occhiali=JSON.parse(xhttp.responseText) 
     console.log(occhiali)
