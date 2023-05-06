@@ -1,5 +1,5 @@
 import express from 'express'
-import mongoose from 'mongoose'
+// import mongoose from 'mongoose'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import occhialiRouter from './routes/occhiali.js' 
@@ -28,6 +28,6 @@ app.get('/',(req,res)=>{res.sendFile('home_page.html',{root: __dirname + "/publi
 app.get('/catalogo',(req,res)=>{res.sendFile('catalogo.html',{root: __dirname + "/public"})})
 app.get('/new',(req,res)=>{res.sendFile('form.html',{root: __dirname + "/public"})})
 app.all('*',(req,res)=>{res.send('<h1>Pagina non trovata</h1>')})  
-mongoose.connect(process.env.CONNECTION_URL)
+// mongoose.connect(process.env.CONNECTION_URL)
 .then(()=>{
     app.listen(PORT,()=>{console.log(`server running on port ${PORT}`)})})
