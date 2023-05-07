@@ -89,7 +89,7 @@ label {color:white}
 <header class="header">
     <p class="titolo">Eyes and blue IN</p>   
     <input class="menu-btn" id="menu-btn" type="checkbox">
-        <label class="menu-icon" for="menu-btn" style="left:180px; top:10px">
+        <label class="menu-icon" for="menu-btn" style="left:150px; top:10px">
         <span class="nav-icon"></span>
         </label>
      <div class="menu">
@@ -153,9 +153,9 @@ label {color:white}
                 <h1>${occhiale.nome}</h1>
                 <h2>${occhiale.gender}</h2>
                 <h3>${occhiale.materiale}</h3>
-                <h3>${occhiale.id}</h3>
-                <button onClick="setEditModal('${occhiale.id}')" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Edit</button>
-                <button onClick="delet('${occhiale.id}')" class="btn btn-danger">Delete</button>
+                <h3>${occhiale._id}</h3>
+                <button onClick="setEditModal('${occhiale._id}')" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Edit</button>
+                <button onClick="delet('${occhiale._id}')" class="btn btn-danger">Delete</button>
             </div><hr>`
                 
         const tab=document.getElementById('occhi')
