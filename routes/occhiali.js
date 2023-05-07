@@ -9,7 +9,7 @@ let occhiali = [{id:"1",nome:"bianco",gender:"maschio",materiale:"plastica"},
                 {id:"2",nome:"verde",gender:"maschio",materiale:"titanio"}]
 occhiali=[]
 router.get('/',async(req,res)=>{ 
-    try{const occhiali=await Occhiale.find()
+    try {const occhiali=await Occhiale.find()
     res.status(200).json(occhiali)}
     catch(error){res.status(404).json({message:error.message})}})
 
@@ -41,7 +41,7 @@ router.post('/:id',async(req,res)=>{
 
 router.get('/:id',async(req,res)=>{
     const {id}=req.params
-    try{const occhiale=await Occhiale.findById(id)
+    try {const occhiale=await Occhiale.findById(id)
     res.status(200).json(occhiale)}
     catch (error){res.status(404).json({message: error.message})}})
 
