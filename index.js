@@ -30,5 +30,6 @@ app.get('/new',(req,res)=>{res.sendFile('form.html',{root: __dirname + "/public"
 app.all('*',(req,res)=>{res.send('<h1>Pagina non trovata</h1>')})  
 mongoose.connect(process.env.CONNECTION_URL)
 .then(()=>{
-    app.listen(PORT,()=>{console.log(`server running on port ${PORT}`)})
-})
+    app.listen(PORT,()=>{console.log(`server running on port ${PORT}`)})})
+.catch (error=>console.error(error))
+
