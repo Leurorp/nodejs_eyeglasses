@@ -1,4 +1,3 @@
-import cookieParser from 'cookie-parser'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config()

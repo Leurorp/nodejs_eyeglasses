@@ -60,11 +60,10 @@ export const login=async(req,res)=>{
                 { expiresIn: maxAge,}) // 3ore in sec
                 console.log(token)
                 res.cookie("jwt", token, {
+                secure: true,
                 httpOnly: true,
                 maxAge: maxAge * 1000}) // 3ore in ms 
-                res.status(201).json({
-                    message: "User successfully Logged in",
-                    user: client._id,})}
+                res.status(201).json({user: client})}
             else {return res.status(401).json({status:'error',message:'devi completare iscrizione confermando la tua email'})}}
             else{res.status(401).json({status:'error',message:'password errata'})}
             })
@@ -72,17 +71,36 @@ export const login=async(req,res)=>{
         }
     catch (error) {res.status(400).json({message: "An error occurred",error: error.message})}}
 
+export const datiUser=async(req,res)=>{
+    const {_id}=req.body
+    try{
+        const client = await Client.find({_id})
+        res.status(201).json({user: client})}
+    catch (err) {console.log(err.message)}
+}
 export const primoLogin=async(req,res)=>{
-    const{username,password}=req.body     
-    const client=await Client.findOne({username})
-    if (!client){return res.status(404).json({status:'error',message:'username errato'})}
+    const { username,password }=req.body 
+    try {    
+    const client = await Client.findOne({username})
+    if (!client) {return res.status(401).json({status:'error',message:'username errato'})}
     if (await bcrypt.compare(password,client.password)) {
-        try{await Client.updateOne(
+            await  Client.updateOne(
             {"username":username},
             {$set:{"statoIscrizione":'1'}})
-            const data=[username,password,client.email]  
-            return res.render('login/authHome.ejs',{data:data})}//login accettato, vai alla home dell'utente
-        catch (error) {res.status(409).json({status:'error',message:error.message})}}
-    res.status(401).json({status:'error',message:'password errata'})}  
+            const maxAge=3*60*60 //3600 sec x 3
+            const token = jwt.sign(
+            { id: client._id, username:client.username },//jwt.sign genera un token applicato su id e username
+            process.env.JWT_SECRET,
+            { expiresIn: maxAge,}) // 3ore in sec
+            console.log(token)
+            res.cookie("jwt", token, {
+            secure: true,
+            httpOnly: true,
+            maxAge: maxAge * 1000}) // 3ore in ms 
+            res.status(201).json({user: client}) }
+        else {return res.status(401).json({status:'error',message:'password errata'})}  
+            }
+        catch (error) {res.status(400).json({status:'error',message:error.message})}
+    }  
 
 export default routerAuth

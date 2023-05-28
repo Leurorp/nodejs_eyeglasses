@@ -103,7 +103,7 @@ label {color:white}
           <li class="ndf"><a href="">CONTATTI</a></li>
           <li class="dropdown">
             <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="margin:15px">
-              
+              <span id="username"></span>
             </button>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="/logout">Logout</a></li>
@@ -112,3 +112,31 @@ label {color:white}
       </ul>
      </div>    
 </header><br><hr>
+<p id="email" style="text-align:center; color:aqua; font-size:18px;"></p>
+<script>
+getCookie()
+function getCookie() {  
+  let x=document.cookie; let data=[]; console.log(x) 
+  let xy=x.split(';')
+  for (let d=0; xy.length>d; d++ ) {
+    let i=0; let xyz=xy[d].trim();  
+    while (xyz.length>i) {
+      if (xyz[i]=='=') {data.push(xyz.substring(i+1))}
+      i++
+    }
+  }
+  const id=data[0]
+  // const email=data[1]
+  myUser()
+  async function myUser(){
+    try {
+        const res = await fetch('/register/datiUser',{method:'POST',
+        body: JSON.stringify({ _id:id }),
+        headers: { 'Content-Type':'application/json' }})
+    const data1 = await res.json(); console.log(data1)
+    document.getElementById('username').innerHTML=data1.user[0].username
+    document.getElementById('email').innerHTML=data1.user[0].email
+  }
+  catch (err) {console.log(err.message)}
+}}
+</script>

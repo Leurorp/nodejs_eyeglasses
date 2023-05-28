@@ -106,7 +106,8 @@
         LA TUA EMAIL E' STATA CONFERMATA<br>
         PUOI EFFETTUARE L'ACCESSO 
     </h1>
-    <form method="POST" action="/register/primoLogin">
+    <form id="myForm">
+    <div class="error" style="background-color: red;"></div>
     <div class="row g-3 align-items-center">
         <div class="col-auto">
             <label class="col-form-label" for="password">Password:</label>
@@ -124,8 +125,33 @@
         </div>
     </div>   
     <br>
-    <button class="btn btn-success" type="submit">Invia:</button>
-       
+    <button class="btn btn-success" type="submit">Invia:</button>   
     </form>
+<script>
+      const form = document.querySelector('#myForm')
+      const username = document.querySelector('#username')
+      const password = document.querySelector('#password')
+      const display = document.querySelector('.error')
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault()//annulla l'evento se è annullabile
+        display.style.color="white"
+        display.textContent = ''
+        try {
+            const res = await fetch('/register/primoLogin',{method:'POST',
+            body: JSON.stringify({ username:username.value, password:password.value }),
+            headers: { 'Content-Type':'application/json' }
+            })
+          const data = await res.json()
+          if (res.status === 400 || res.status === 401) {
+            return display.textContent = `${data.message}. ${data.error ? data.error : ''}`
+                                                        }
+          const scadenza = new Date(Date.now() +1800000).toUTCString()//data di oggi piu mezzo secondo
+          document.cookie = `id=${data.user._id}; expires=${scadenza}`;
+          // document.cookie = `email=${data.user.email}; expires=${scadenza}`
+          window.location.href='http://127.0.0.1:3000/authHome'
+        } 
+        catch (err) {console.log(err.message)}})
+
+</script>
 </body>
 </html>
