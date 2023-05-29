@@ -33,6 +33,7 @@ app.get('/login',(req,res)=>{res.render('login.ejs')})
 
 app.get('/authCatalogo',authToken,(req,res)=>{res.render('login/authCatalogo.ejs')})
 app.get('/authHome',authToken,(req,res)=>{res.render('login/authHome.ejs',)})
+app.get('/authHomeAdmin',authToken,(req,res)=>{res.render('admin/authHomeAdmin.ejs')})
 app.get("/logout", (req, res) => {
     res.cookie("jwt", "", { maxAge: "1" })// azzera il cookie jwt
     res.clearCookie("jwt") // pulisce il cookie jwt

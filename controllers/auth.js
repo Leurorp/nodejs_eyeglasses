@@ -101,6 +101,27 @@ export const primoLogin=async(req,res)=>{
         else {return res.status(401).json({status:'error',message:'password errata'})}  
             }
         catch (error) {res.status(400).json({status:'error',message:error.message})}
-    }  
+    }
+export const loginAdmin=async(req,res)=>{
+    const { username,password } = req.body; console.log(username)
+    try {     
+        if (username!='ma') {return res.status(401).json({status:'error',message:'username errato'})}               
+        if (password=="12345") {              
+            const maxAge=3*60*60 //3600 sec x 3
+            const token = jwt.sign(
+            { password:password, username:username },//jwt.sign genera un token applicato su id e username
+            process.env.JWT_SECRET,
+            { expiresIn: maxAge,}) // 3ore in sec
+            console.log(token)
+            res.cookie("jwt", token, {
+            secure: true,
+            httpOnly: true,
+            maxAge: maxAge * 1000}) // 3ore in ms 
+            res.status(201).json({user:username})
+           }
+            else{res.status(401).json({status:'error',message:'password errata'})}                    
+        }
+    catch (error) {res.status(400).json({message: "An error occurred",error: error.message})}
+}  
 
 export default routerAuth
