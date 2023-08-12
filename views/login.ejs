@@ -4,6 +4,7 @@
 </h1>
 <%- include('index'); %>
 <!-- Modal REGISTER -->
+<div class="container-fluid">
 <div id="myModal" class="modal fade" role="dialog">
 <div class="modal-dialog">
 
@@ -88,9 +89,9 @@
               <div class="error1" style="background-color: red;"></div>
               <div class="col-md-6">
                 <label for="password">Password:</label>
-                <input class="form-control" id="passwordAdmin" type="text" name="password">
+                <input class="form-control" id="passwordAdmin" type="text" name="password" value="12345">
                 <label for="username">Username:</label>
-                <input class="form-control" id="usernameAdmin" type="text" name="username">
+                <input class="form-control" id="usernameAdmin" type="text" name="username" value="ma">
                 <br>
                 <button type="submit">Invia:</button>
               </div>
@@ -103,7 +104,7 @@
       </div>
   </div>
   <button style="float:right" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal3">Admin</button>
-
+</div>
 <script>
   //--------------- CLIENT -------------------------------------------
       const form = document.querySelector('#myForm')
@@ -151,7 +152,6 @@
           location.assign('/authHomeAdmin')
         } 
         catch (err) {console.log(err.message)}})
-
 </script>
 </body>
 </html>

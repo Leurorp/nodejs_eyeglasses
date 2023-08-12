@@ -1,0 +1,39 @@
+<%- include('authHome') %>
+<style>
+  label {color:black}
+</style>
+<h2 class="text-center" style="color:white">Lista ordine</h2>
+<div class="container-fluid">
+    <div style="color:white" id="ordine"></div>
+</div>
+<script>
+// GET COOKIE E SEND COOKIE 
+  let x=document.cookie; let data=[] 
+  let xy=x.split(';')
+  for (let d=0; xy.length>d; d++ ) {
+    let i=0; let xyz=xy[d].trim();  
+    while (xyz.length>i) {
+      if (xyz[i]=='=') {data.push(xyz.substring(i+1))}
+      i++}}
+  const idCliente=data[0]
+  const scadenza = new Date(Date.now() +1800000).toUTCString()//data di oggi piu mezzo secondo
+  document.cookie = `id=${idCliente}; expires=${scadenza}`
+
+fetch(`/order/${idCliente}`,{method:'GET',header:{'Content-Type':'application/json'}})
+.then(response=>response.json())
+.then(data=>{const order=data
+let xw=`<h2>Nome: ${order[0].nome}</h2>
+        <h2>Cognome: ${order[0].cognome}</h2>
+        <h2>Via: ${order[0].via}</h2>
+        <h2>Città: ${order[0].citta}</h2>
+        <h2>Cap: ${order[0].cap}</h2>`
+        
+    fetch(`/eyes/${order[0].idOcchiale}`,{method:'GET',header:{'Content-Type':'application/json'}})
+    .then(response=>response.json())
+    .then(occhiale=>{console.log(occhiale)
+    xw=xw+`<h2>Nome occhiale: ${occhiale.nome}</h2>
+            <h2>Gender: ${occhiale.gender}</h2>
+            <h2>Materiale: ${occhiale.materiale}</h2>
+            <h2 style="color:red">Prezzo: ${occhiale.prezzo} €</h2>`
+document.querySelector('#ordine').innerHTML=xw })})
+</script>

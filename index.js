@@ -3,7 +3,8 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import dotenv from 'dotenv'//per usare le chiavi in .env
 import occhialiRouter from './routes/occhiali.js'
-import occhialiRouterAuth from './routes/auth.js'  
+import occhialiRouterAuth from './routes/auth.js'
+import RouterOrder from './routes/order.js'  
 import path from "path"
 import bodyParser from 'body-parser'
 import { authToken } from './middleware/authToken.js'
@@ -27,11 +28,13 @@ app.use(cors())
 app.set('view engine', 'ejs')//modulo per includere pagine html in altri layout html
 app.use('/register',occhialiRouterAuth)//aggancia il modulo occhialiRouterAuth alla rotta register
 app.use('/eyes',occhialiRouter)//aggancia il modulo occhialiRouter alla rotta eyes
-app.get('/',(req,res)=>{res.render('index')})
+app.get('/',(req,res)=>{res.render('index.ejs')})
 app.get('/catalogo',(req,res)=>{res.render('catalogo.ejs')})
 app.get('/login',(req,res)=>{res.render('login.ejs')})
+app.use('/order',RouterOrder)
 
 app.get('/authCatalogo',authToken,(req,res)=>{res.render('login/authCatalogo.ejs')})
+app.get('/authOrdine',authToken,(req,res)=>{res.render('login/authOrdine.ejs')})
 app.get('/authHome',authToken,(req,res)=>{res.render('login/authHome.ejs',)})
 app.get('/authHomeAdmin',authToken,(req,res)=>{res.render('admin/authHomeAdmin.ejs')})
 app.get("/logout", (req, res) => {
