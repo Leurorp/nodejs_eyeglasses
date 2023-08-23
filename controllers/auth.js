@@ -27,7 +27,7 @@ export const register=async(req,res)=>{
                 await Client.deleteOne({email:email})}}
     if (!username || typeof username!='string')
     {return res.send('username non valido<br><a href="/login">Torna al login</a>')}
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY); 
         const msg = {
         to: email, // Destinatario
         from: 'leuro.borsini@libero.it', // Mittente verificato
@@ -36,12 +36,12 @@ export const register=async(req,res)=>{
         html: '<a href="http://127.0.0.1:3000/primoLogin.html">Per confermare la tua email clicca qui</a>',}
         sgMail.send(msg)
         .then(() => {
-        console.log('Email sent')})
+        console.log('Email sent')} )
         .catch((error) => {console.error(error)})
         const passwordHashed=await bcrypt.hash(password,10)
         const client=new Client({username:username, password:passwordHashed, email:email, statoIscrizione:'0'})
         try{await client.save()
-        res.status(201).json({status:'Vai nella tua email e confermala!'})}
+        res.status(201).json({status:'Vai nella tua email '+email+' e confermala!'})}
         catch (error) {res.status(409).json({status:'error',message:error.message})}}
 
 export const login=async(req,res)=>{
