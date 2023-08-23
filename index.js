@@ -21,7 +21,7 @@ app.use(cookieParser())// per passare il token tra i percorsi
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
 app.use(express.json())
-dotenv.config()//per usare le chiavi in .env
+dotenv.config({path:"./env/.env"})//per usare le chiavi in .env
 const PORT=process.env.PORT
 app.use(cors())
 
