@@ -1,12 +1,43 @@
 <%- include('index') %>
 
-<h2 class="text-center" style="color:white">Lista occhiali</h2>
+<style>
+  .autocomplete {position:relative; display:inline-block; 
+}
+  input {border-radius:10px; background-color:#f1f1f1;
+    padding:10px; font-size:14px;
+}
+  input[type=submit] {background-color:DodgerBlue;
+    color:#fff; cursor:pointer;
+}
+  .autocomplete-items {
+  position:absolute; border:1px solid #d4d4d4;
+  border-bottom:none; border-top:none;
+  z-index:99; top:100%; left:0; right:0;
+}
+  .autocomplete-items div {
+    padding:10px; cursor:pointer; background-color:#fff; border-bottom:1px solid#d4d4d4; 
+}
+  .autocomplete-items div:hover {background-color:#e9e9e9; 
+}
+  .autocomplete-active {background-color:DodgerBlue !important; color:#ffffff; 
+}
+</style>
+
+<div class="text-center">
+    <div class="autocomplete">
+      <i><input id="myInput" type="text" name="myProduct" placeholder="Cerca"></i>
+      <input type="submit" id="subm">
+    </div> 
+    <div id="point_of_found_product" style="transition: all 0.5s; color:rgb(234, 239, 201); padding:10px;">
+    </div>
+      
+  <h2 class="text-center" style="color:white">Lista occhiali</h2>
+</div>
 <hr>
 <div class="container">
   <div id="occhi"></div><!--div per generazione lista prodotti-->
   <div id="prova"></div>
 </div>
-
 
 <script type='text/javascript'> 
   function loadOcchiali() {
@@ -31,12 +62,133 @@
         tab.insertAdjacentHTML('beforeend',x)
     }
   }
-
+  function mustLogged() {
+    const jkl=document.getElementById('point_of_found_product')
+    jkl.insertAdjacentHTML("beforeend"," logged obbligatory")
+    const myTimeout=setTimeout(function(){jkl.innerHTML=""},2000)
+  }
   function setBuy(id){
     document.getElementById(id).innerHTML="logged obbligatory"
     const myTimeout=setTimeout(function(){document.getElementById(id).innerHTML=""},2000)
   }
   loadOcchiali()
+  
+  function autocomplete(inp, arr) {
+  /*autocomplete accetta due argomenti: l'elemento del campo di testo e una serie di possibili valori completati automaticamente*/
+  let currentFocus
+  /*esegui una funzione quando viene scritto nell'input*/
+  inp.addEventListener("input", function(e) {
+      let a, b, i, val = this.value
+      /*chiudere eventuali elenchi gia aperti*/
+      closeAllLists()
+      if (!val) {return false}
+      currentFocus = -1
+      /*creare un elemento DIV che conterrà gli elementi (valori)*/
+      a = document.createElement("DIV")
+      a.setAttribute("id", this.id + "autocomplete-list")
+      a.setAttribute("class", "autocomplete-items")
+      /*aggiungi l'elemento DIV come figlio del contenitore di completamento automatico*/
+      this.parentNode.appendChild(a)
+      for (i = 0; i < arr.length; i++) {
+        /*controlla se l'elemento inizia con le stesse lettere del valore del campo di testo*/
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+          /*creare un elemento DIV per ogni elemento corrispondente*/
+          b = document.createElement("DIV")
+          /*rendi in grassetto la prima lettera delle parole dell'elenco*/
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>"
+          b.innerHTML += arr[i].substr(val.length)/*stampa il resto della parola*/
+          /*inserisci un campo di input che conterrà il valore dell'elemento dell'array corrente*/
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>"
+          /*eseguire una funzione quando qualcuno fa clic sul valore dell'articolo (elemento DIV)*/
+          b.addEventListener("click", function(e) {
+              /*inserisci il valore per il campo di testo di completamento automatico*/
+              inp.value = this.getElementsByTagName("input")[0].value; let fgh=inp.value    
+              // submit sull'elemento cliccato
+              document.getElementById('subm').addEventListener('click',()=>{setValue(fgh)})
+              function setValue(data) {
+                fetch ('/eyes',{method:'GET',headers:{'Content-Type':'application/Json'}})
+                .then ((response)=>response.json())
+                .then ((res)=>{
+                  res.forEach(element => {
+                    if (element.nome==data) {
+                      const price=element.prezzo; const material=element.materiale
+                      const ert = document.getElementById('point_of_found_product')
+                      ert.style.fontSize="20px"
+                      ert.innerHTML = `${data} ${material} ${price} € <button style="background-color:grey"
+                       onclick="mustLogged()">Acquista</button>`;  return
+                      }
+                  }) 
+                })}
+              /*chiudi qualsiasi altro elenco aperto di valori completati automaticamente*/
+              closeAllLists()
+          })
+          a.appendChild(b)
+        }
+      }
+  })
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener ("keydown", function(e) {
+      let x = document.getElementById(this.id + "autocomplete-list")
+      if (x) x = x.getElementsByTagName("div")
+      if (e.keyCode == 40) {
+        /*Se viene premuto il tasto freccia GIÙ,aumentare la variabile currentFocus*/
+        currentFocus++
+        /*rendono l'elemento corrente più visibile*/
+        addActive(x)
+      } else if (e.keyCode == 38) { 
+        /*Se viene premuto il tasto freccia SU,diminuire la variabile currentFocus*/
+        currentFocus--
+        /*rendono l'elemento corrente più visibile*/
+        addActive(x)
+      } else if (e.keyCode == 13) {
+        /*Se viene premuto il tasto INVIO, impedisce l'invio del modulo*/
+        e.preventDefault()
+        if (currentFocus > -1) {
+          /*e simulare un clic sulla voce "attiva"*/
+          if (x) x[currentFocus].click()
+        }
+      }
+  })
+  function addActive(x) {
+    /*una funzione per classificare un elemento come "attivo"*/
+    if (!x) return false
+    /*inizia rimuovendo la classe "attiva" su tutti gli elementi*/
+    removeActive(x)
+    if (currentFocus >= x.length) currentFocus = 0
+    if (currentFocus < 0) currentFocus = (x.length - 1)
+    x[currentFocus].classList.add("autocomplete-active")/*add class "autocomplete-active":*/
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (let i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active")
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*chiudi tutti gli elenchi di completamento automatico nel documento,
+    tranne quello passato come argomento*/
+    let x = document.getElementsByClassName("autocomplete-items")
+    for (let i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i])
+      }
+    }
+  }
+  /*execute a function when someone clicks in the body*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target)
+  })
+  }
+  fetch ('/eyes',{method:'GET',headers:{'Content-Type':'application/Json'}})
+    .then ((response)=>response.json())
+    .then ((data)=>{ const product = []
+      data.forEach(element => {
+        product.push(element.nome)
+      })
+      autocomplete(document.getElementById("myInput"), product)})
+  .catch((error)=>{console.error('Errore:',error)
+  })
+  
 </script>
 </body>
 </html>
